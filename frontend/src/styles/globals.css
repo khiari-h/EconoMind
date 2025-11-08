@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Reuse existing chat-bubble classes if any were in index.css/App.css; keep minimal defaults */
+.chat-bubble { @apply my-3 p-3 rounded-lg; }
+.chat-bubble.agent { @apply bg-gray-50 border border-gray-200; }
+.chat-bubble.user { @apply bg-primary-50 border border-primary-100 text-gray-800; }

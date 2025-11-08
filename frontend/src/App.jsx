@@ -1,65 +1,58 @@
-import { useState } from 'react'
-import Home from './components/Home'
-import Professor from './components/Professor'
-import Coach from './components/Coach'
-import Courses from './components/Courses'
+import { useState } from 'react';
+import Layout from './components/Layout';
+import Home from './components/Home';
+import Courses from './components/Courses';
+import Professor from './components/Professor';
+import Coach from './components/Coach';
+import CourseReader from './components/CourseReader';
+import About from './components/About'; // This import is now used
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('home')
-  const [selectedCourse, setSelectedCourse] = useState(null)
+  const [page, setPage] = useState('home');
+  const [course, setCourse] = useState(null);
+  const [viewedCourses, setViewedCourses] = useState([]); // <-- This is our "memory" of viewed courses
 
-  const navigate = (page, course = null) => {
-    setCurrentPage(page)
-    setSelectedCourse(course)
-  }
+  const navigate = (newPage, newCourse = null) => {
+    // If navigating to an agent without a new course, keep the old one
+    if ((newPage === 'professor' || newPage === 'coach') && newCourse === null) {
+      // Do nothing, the course is already in the state
+    } else {
+      setCourse(newCourse);
+    }
+
+    // If reading a course, add it to the history if it's not already there
+    if (newPage === 'read' && newCourse && !viewedCourses.some(c => c.id === newCourse.id)) {
+      setViewedCourses(prev => [...prev, newCourse]);
+    }
+
+    setPage(newPage);
+    window.scrollTo(0, 0); // Scroll to top on page change
+  };
+
+  const renderPage = () => {
+    switch (page) {
+      case 'courses':
+        return <Courses navigate={navigate} />;
+      case 'professor':
+        // Pass the history to our agents!
+        return <Professor course={course} navigate={navigate} viewedCourses={viewedCourses} />;
+      case 'coach':
+        return <Coach course={course} navigate={navigate} viewedCourses={viewedCourses} />;
+      case 'read':
+        return <CourseReader courseId={course?.id} />;
+      case 'about':
+        return <About />;
+      case 'home':
+      default:
+        return <Home navigate={navigate} />;
+    }
+  };
 
   return (
-    <div className="min-h-screen">
-      {/* Navigation Bar */}
-      <nav className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div 
-              className="flex items-center cursor-pointer"
-              onClick={() => navigate('home')}
-            >
-              <span className="text-2xl font-bold text-primary-600">
-                💡 EconoMind
-              </span>
-            </div>
-            <div className="flex space-x-4">
-              <button
-                onClick={() => navigate('courses')}
-                className="px-4 py-2 text-gray-700 hover:text-primary-600 transition"
-              >
-                Courses
-              </button>
-              <button
-                onClick={() => navigate('professor')}
-                className="px-4 py-2 bg-professor text-white rounded-lg hover:bg-professor-dark transition"
-              >
-                Professor
-              </button>
-              <button
-                onClick={() => navigate('coach')}
-                className="px-4 py-2 bg-coach text-white rounded-lg hover:bg-coach-dark transition"
-              >
-                Coach
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content */}
-      <main>
-        {currentPage === 'home' && <Home navigate={navigate} />}
-        {currentPage === 'courses' && <Courses navigate={navigate} />}
-        {currentPage === 'professor' && <Professor course={selectedCourse} />}
-        {currentPage === 'coach' && <Coach course={selectedCourse} />}
-      </main>
-    </div>
-  )
+    <Layout navigate={navigate} currentPage={page}>
+      {renderPage()}
+    </Layout>
+  );
 }
 
-export default App
+export default App;

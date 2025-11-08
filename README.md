@@ -188,28 +188,25 @@ economind-hackathon/
 
 ## 📊 Architecture Diagram
 
-```
-┌─────────────┐
-│   User      │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────────────────┐
-│  Frontend (Cloud Run)   │
-│  React + Vite           │
-│  Port: 8080             │
-└──────────┬──────────────┘
-           │ HTTP/REST
-           ▼
-┌─────────────────────────┐
-│  Backend (Cloud Run)    │
-│  FastAPI + Python       │
-│  Port: 8080             │
-└──────────┬──────────────┘
-           │
-           ├─── Professor Agent ───► Gemini API
-           │
-           └─── Coach Agent ───────► Gemini API
+```mermaid
+graph TD
+    subgraph "User's Browser"
+        A[React Frontend on Cloud Run]
+    end
+
+    subgraph "Google Cloud Project"
+        B[FastAPI Backend on Cloud Run]
+        C[Google Gemini API]
+    end
+
+    A --"REST API Call"--> B
+    B --"Defines Agent Persona (ADK)"--> C
+    C --"Generates Response"--> B
+    B --"Sends Response to User"--> A
+
+    style A fill:#61DAFB,stroke:#333,stroke-width:2px
+    style B fill:#009688,stroke:#333,stroke-width:2px,color:#fff
+    style C fill:#4285F4,stroke:#333,stroke-width:2px,color:#fff
 ```
 
 ## 🎯 Features
