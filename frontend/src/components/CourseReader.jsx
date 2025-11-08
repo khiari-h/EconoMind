@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
+import PropTypes from 'prop-types';
 import remarkGfm from "remark-gfm";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
@@ -11,17 +12,21 @@ function CourseReader({ courseId }) {
   useEffect(() => {
     async function fetchCourse() {
       setLoading(true);
+      if (!courseId) {
+        setCourse({ title: "No Course Selected", content: "Please select a course from the courses page to read its content." });
+        setLoading(false);
+        return;
+      }
       try {
-        const id = courseId || "supply-demand"; // cours par défaut
-        const res = await fetch(`${API_URL}/api/courses/${id}`);
+        const res = await fetch(`${API_URL}/api/courses/${courseId}`);
         if (!res.ok) throw new Error("Course not found");
         const data = await res.json();
         setCourse(data);
       } catch (err) {
         console.error(err);
         setCourse({
-          title: "Cours non trouvé",
-          content: "Désolé, le cours demandé n'a pas été trouvé."
+          title: "Course Not Found",
+          content: "Sorry, the requested course could not be found."
         });
       } finally {
         setLoading(false);
@@ -56,15 +61,18 @@ function CourseReader({ courseId }) {
         ">
           <h1>{course.title}</h1>
           <p className="lead text-slate-600">{course.description || ""}</p>
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            children={course.content}
-          />
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {course.content}
+          </ReactMarkdown>
         </div>
         </div>
       </div>
     </div>
   );
 }
+
+CourseReader.propTypes = {
+  courseId: PropTypes.string,
+};
 
 export default CourseReader;
