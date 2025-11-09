@@ -1,6 +1,7 @@
 """
 EconoMind Backend API
-Cloud Run Hackathon - AI Agents Category
+Cloud Run Hackathon 2025 - AI Agents Category
+Built with Google ADK (Agent Development Kit)
 """
 
 # Import course data from the separate file
@@ -10,15 +11,10 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List
-
-# Import and configure Gemini
-import google.generativeai as genai
 import os
 
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
-import os
+# Import ADK agents
+from agents import run_professor, run_coach, collaborative_session
 
 # Define constants for course titles to avoid string duplication
 COURSE_TITLE_GDP = "GDP and Economic Growth"
@@ -26,8 +22,8 @@ COURSE_TITLE_TRADE = "International Trade"
 
 app = FastAPI(
     title="EconoMind API",
-    description="Educational AI platform with Professor and Coach agents",
-    version="1.0.0"
+    description="Educational AI platform with ADK-powered Professor and Coach agents",
+    version="2.0.0"
 )
 
 # CORS configuration for frontend
@@ -54,95 +50,11 @@ class ChatResponse(BaseModel):
     response: str
     agent_type: str
 
-# ==================== AI AGENT FUNCTIONS ====================
 
-def professor_agent(user_message: str, course_context: str = None, viewed_courses: List[str] = None) -> str:
-    """
-    🎓 PROFESSOR AGENT - Powered by Gemini
-    Role: Explains concepts clearly with examples
-    """
-    try:
-        model = genai.GenerativeModel('gemini-pro')
-        
-        # Build context-aware prompt
-        context = f"\n\nCourse Context:\n{course_context}" if course_context else ""
-        history_context = ""
-        if viewed_courses:
-            # Create a string listing the viewed courses
-            courses_str = ", ".join(viewed_courses)
-            history_context = f"\n\nThe student has already viewed the following courses: {courses_str}. If relevant, you can make connections to these topics."
-        
-        system_prompt = f"""You are an expert economics professor with years of teaching experience.
-
-Your teaching style:
-- Clear and structured explanations
-- Use real-world examples students can relate to
-- Break down complex concepts into digestible parts
-- Encourage critical thinking
-- Patient and supportive
-
-Guidelines:
-- Keep responses concise but comprehensive (200-400 words)
-- Use analogies when helpful
-- Define technical terms
-- Connect concepts to everyday life
-{context}
-{history_context}
-
-Student Question: {user_message}
-
-Provide a clear, educational response:"""
-
-        response = model.generate_content(system_prompt)
-        return response.text
-        
-    except Exception as e:
-        return f"I apologize, but I'm having trouble processing that. Could you rephrase your question? (Error: {str(e)})"
-
-
-def coach_agent(user_message: str, course_context: str = None, viewed_courses: List[str] = None) -> str:
-    """
-    💪 COACH AGENT - Powered by Gemini
-    Role: Provides practical exercises and training
-    """
-    try:
-        model = genai.GenerativeModel('gemini-pro')
-        
-        # Build context-aware prompt
-        context = f"\n\nCourse Context:\n{course_context}" if course_context else ""
-        history_context = ""
-        if viewed_courses:
-            # Create a string listing the viewed courses
-            courses_str = ", ".join(viewed_courses)
-            history_context = f"\n\nThe student has already practiced topics from these courses: {courses_str}. You can suggest a revision exercise on one of these topics if the student seems unsure."
-        
-        system_prompt = f"""You are an economics coach focused on practical application and skill-building.
-
-Your coaching style:
-- Action-oriented and motivating
-- Create specific, actionable exercises
-- Provide constructive feedback
-- Focus on real-world applications
-- Challenge students to think critically
-
-Guidelines:
-- Create concrete exercises or scenarios
-- Ask thought-provoking questions
-- Provide step-by-step guidance when needed
-- Keep responses practical (200-400 words)
-- Encourage active learning
-{context}
-{history_context}
-
-Student Request: {user_message}
-
-Provide a practical, exercise-focused response:"""
-
-        response = model.generate_content(system_prompt)
-        return response.text
-        
-    except Exception as e:
-        return f"Oops! I'm having trouble creating that exercise. Let's try something else! (Error: {str(e)})"
+class CollaborativeResponse(BaseModel):
+    professor_response: str
+    coach_response: str
+    collaboration: bool
 
 
 # ==================== API ENDPOINTS ====================
@@ -153,7 +65,9 @@ async def root():
     return {
         "status": "running",
         "service": "EconoMind API",
-        "agents": ["professor", "coach"]
+        "version": "2.0.0",
+        "agents": ["professor", "coach"],
+        "powered_by": "Google ADK (Agent Development Kit)"
     }
 
 
@@ -181,11 +95,11 @@ async def get_course(course_id: str):
 @app.post("/api/chat/professor", response_model=ChatResponse)
 async def chat_with_professor(message: ChatMessage):
     """
-    Chat with the Professor agent
+    Chat with the Professor agent (ADK-powered)
     The Professor explains concepts and provides theoretical knowledge
     """
     try:
-        response = professor_agent(
+        response = run_professor(
             user_message=message.message,
             course_context=message.course_context,
             viewed_courses=message.viewed_courses_context
@@ -202,11 +116,11 @@ async def chat_with_professor(message: ChatMessage):
 @app.post("/api/chat/coach", response_model=ChatResponse)
 async def chat_with_coach(message: ChatMessage):
     """
-    Chat with the Coach agent
+    Chat with the Coach agent (ADK-powered)
     The Coach provides practical exercises and applications
     """
     try:
-        response = coach_agent(
+        response = run_coach(
             user_message=message.message,
             course_context=message.course_context,
             viewed_courses=message.viewed_courses_context
@@ -216,6 +130,33 @@ async def chat_with_coach(message: ChatMessage):
             response=response,
             agent_type="coach"
         )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/chat/collaborate", response_model=CollaborativeResponse)
+async def collaborative_learning(message: ChatMessage):
+    """
+    BONUS FEATURE: Collaborative session with both agents
+    Professor explains, then Coach creates practice exercises
+    
+    This demonstrates multi-agent collaboration for bonus hackathon points
+    """
+    try:
+        result = collaborative_session(
+            user_message=message.message,
+            course_context=message.course_context
+        )
+        
+        if result.get("collaboration"):
+            return CollaborativeResponse(
+                professor_response=result["professor"],
+                coach_response=result["coach"],
+                collaboration=True
+            )
+        else:
+            raise HTTPException(status_code=500, detail=result.get("error", "Collaboration failed"))
+            
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

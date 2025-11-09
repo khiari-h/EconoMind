@@ -1,6 +1,6 @@
 # 💡 EconoMind - AI-Powered Economics Learning Platform
 
-**Built for Cloud Run Hackathon 2024 - AI Agents Category**
+**Built for Cloud Run Hackathon 2025 - AI Agents Category**
 
 EconoMind is an interactive educational platform that uses two specialized AI agents to teach economics:
 - 🎓 **The Professor**: Explains concepts with clear theory and examples
@@ -220,7 +220,7 @@ graph TD
 
 ## 📝 License
 
-Built for Cloud Run Hackathon 2024
+Built for Cloud Run Hackathon 2025
 
 ## 👨‍💻 Author
 

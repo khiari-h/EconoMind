@@ -1,240 +1,200 @@
-# 🚀 Quick Deployment Guide
+# EconoMind - Deployment Guide for Cloud Run with ADK
 
-## ⏱️ Timeline: 2 Days
+## Prerequisites
 
-### Day 1 - TODAY (Setup & Integration)
+1. Google Cloud Project with billing enabled
+2. `gcloud` CLI installed and authenticated
+3. Cloud Run API enabled
+4. Vertex AI API enabled
 
-#### Morning (3-4 hours)
-1. **Setup Google Cloud** (30 min)
-   ```bash
-   # Install gcloud CLI if needed
-   # Login to Google Cloud
-   gcloud auth login
-   gcloud config set project YOUR_PROJECT_ID
-   ```
+## Setup Steps
 
-2. **Get Gemini API Key** (15 min)
-   - Visit: https://makersuite.google.com/app/apikey
-   - Create API key
-   - Save it securely
+### 1. Set Environment Variables
 
-3. **Integrate Gemini in Backend** (2-3 hours)
-   - Follow instructions in README.md
-   - Update `backend/main.py` with Gemini calls
-   - Test locally with:
-     ```bash
-     cd backend
-     export GEMINI_API_KEY="your-key"
-     python main.py
-     ```
-   - Test endpoints:
-     ```bash
-     curl -X POST http://localhost:8080/api/chat/professor \
-       -H "Content-Type: application/json" \
-       -d '{"message": "Explain supply and demand"}'
-     ```
-
-#### Afternoon (3-4 hours)
-4. **Test Full App Locally** (1 hour)
-   - Run backend (terminal 1):
-     ```bash
-     cd backend
-     python main.py
-     ```
-   - Run frontend (terminal 2):
-     ```bash
-     cd frontend
-     npm run dev
-     ```
-   - Test both agents in browser
-
-5. **Deploy Backend to Cloud Run** (1 hour)
-   ```bash
-   cd backend
-   gcloud run deploy economind-backend \
-     --source . \
-     --platform managed \
-     --region us-central1 \
-     --allow-unauthenticated \
-     --set-env-vars GEMINI_API_KEY="your-key"
-   
-   # Note the service URL!
-   ```
-
-6. **Deploy Frontend to Cloud Run** (1 hour)
-   ```bash
-   cd frontend
-   
-   # Update .env with backend URL
-   echo "VITE_API_URL=https://your-backend-url.run.app" > .env
-   
-   # Deploy
-   gcloud run deploy economind-frontend \
-     --source . \
-     --platform managed \
-     --region us-central1 \
-     --allow-unauthenticated
-   ```
-
-#### Evening (2-3 hours)
-7. **Test Deployed App** (30 min)
-   - Visit your frontend URL
-   - Test all features
-   - Fix any bugs
-
-8. **Create GitHub Repository** (30 min)
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit: EconoMind for Cloud Run Hackathon"
-   git branch -M main
-   git remote add origin https://github.com/YOUR_USERNAME/economind.git
-   git push -u origin main
-   ```
-
-9. **Start Architecture Diagram** (1 hour)
-   - Use tools like: draw.io, Excalidraw, or Google Slides
-   - Show: Frontend → Backend → Gemini
-   - Include Cloud Run services
-
-### Day 2 - TOMORROW (Video & Submission)
-
-#### Morning (4-5 hours)
-10. **Record Demo Video** (2-3 hours)
-    - Script your video (see script below)
-    - Record with: OBS Studio, Loom, or phone
-    - Show:
-      - Landing page
-      - Professor chat demo
-      - Coach chat demo
-      - Course selection
-    - Max 3 minutes!
-
-11. **Edit Video** (1-2 hours)
-    - Add intro/outro
-    - Add text overlays for features
-    - Upload to YouTube (Public or Unlisted)
-
-#### Afternoon (3-4 hours - BEFORE 5PM PT!)
-12. **Complete Documentation** (1 hour)
-    - Finish README
-    - Add screenshots
-    - Write clear setup instructions
-
-13. **Finalize Architecture Diagram** (30 min)
-    - Export as PNG/PDF
-    - Make it clear and professional
-
-14. **Submit on Devpost** (1-2 hours)
-    - Create submission
-    - Fill all required fields:
-      - ✅ Project description
-      - ✅ GitHub repo link
-      - ✅ Demo video link
-      - ✅ Live demo URL (frontend)
-      - ✅ Architecture diagram
-      - ✅ Built with (Cloud Run, Gemini, etc.)
-    - Select category: **AI Agents**
-    - Submit BEFORE 5PM PT!
-
-15. **Bonus Points** (if time allows)
-    - Write blog post on Medium/Dev.to
-    - Post on LinkedIn/Twitter with #CloudRunHackathon
-
----
-
-## 🎬 Demo Video Script (3 minutes)
-
-### Part 1: Problem (0:00-0:30)
-"Learning economics can be challenging. Students need both theoretical understanding AND practical application. That's why I built EconoMind."
-
-### Part 2: Solution (0:30-1:00)
-"EconoMind uses two specialized AI agents powered by Google Gemini:
-- The Professor explains concepts clearly
-- The Coach provides hands-on exercises
-Both deployed on Google Cloud Run for scalability."
-
-### Part 3: Demo (1:00-2:15)
-- Show landing page (10 sec)
-- Demo Professor explaining supply/demand (30 sec)
-- Demo Coach giving practice exercise (30 sec)
-- Show course selection (15 sec)
-
-### Part 4: Technical (2:15-2:50)
-"Architecture:
-- React frontend on Cloud Run
-- FastAPI backend on Cloud Run
-- Two Gemini AI agents
-- Fully serverless and scalable"
-
-### Part 5: Conclusion (2:50-3:00)
-"EconoMind makes economics education interactive, personalized, and accessible. Thank you!"
-
----
-
-## ✅ Submission Checklist
-
-Before submitting, verify:
-- [ ] Backend deployed on Cloud Run
-- [ ] Frontend deployed on Cloud Run
-- [ ] Both services working together
-- [ ] GitHub repo is public
-- [ ] README is complete
-- [ ] Demo video uploaded (YouTube)
-- [ ] Video is < 3 minutes
-- [ ] Architecture diagram created
-- [ ] All code is documented
-- [ ] Devpost submission filled out
-- [ ] Category selected: AI Agents
-- [ ] Submitted BEFORE 5PM PT Nov 10
-
----
-
-## 🆘 Troubleshooting
-
-**Backend won't start:**
 ```bash
-# Check Python version
-python --version  # Should be 3.11+
+# Set your project ID
+export PROJECT_ID="your-project-id"
+export REGION="europe-west1"  # Required by hackathon rules
 
-# Reinstall dependencies
-pip install -r requirements.txt --break-system-packages
+# Configure gcloud
+gcloud config set project $PROJECT_ID
 ```
 
-**Frontend won't build:**
+### 2. Enable Required APIs
+
 ```bash
-# Clear cache and reinstall
-rm -rf node_modules package-lock.json
-npm install
+# Enable Cloud Run
+gcloud services enable run.googleapis.com
+
+# Enable Vertex AI (required for ADK)
+gcloud services enable aiplatform.googleapis.com
+
+# Enable Container Registry
+gcloud services enable containerregistry.googleapis.com
 ```
 
-**Cloud Run deployment fails:**
+### 3. Build and Deploy
+
+#### Option A: Using Cloud Build (Recommended)
+
 ```bash
-# Check you're logged in
-gcloud auth list
+# Build and push the container
+gcloud builds submit --tag gcr.io/$PROJECT_ID/economind-backend
 
-# Check project is set
-gcloud config get-value project
-
-# Check region is correct
-gcloud config set run/region us-central1
+# Deploy to Cloud Run
+gcloud run deploy economind-backend \
+  --image gcr.io/$PROJECT_ID/economind-backend \
+  --platform managed \
+  --region $REGION \
+  --allow-unauthenticated \
+  --set-env-vars GCP_PROJECT_ID=$PROJECT_ID,GCP_LOCATION=$REGION \
+  --memory 1Gi \
+  --cpu 1 \
+  --timeout 300
 ```
 
-**Gemini API not working:**
-- Check API key is correct
-- Verify it's set as environment variable
-- Check API quotas in Google Cloud Console
+#### Option B: Using Docker locally
 
----
+```bash
+# Build the image
+docker build -t gcr.io/$PROJECT_ID/economind-backend .
 
-## 💡 Tips
+# Push to Google Container Registry
+docker push gcr.io/$PROJECT_ID/economind-backend
 
-1. **Test locally first** - Make sure everything works before deploying
-2. **Keep it simple** - Working features > broken complexity
-3. **Document as you go** - Don't leave it for last
-4. **Record video early** - You can always re-record if needed
-5. **Submit early** - Don't wait until the last minute!
+# Deploy
+gcloud run deploy economind-backend \
+  --image gcr.io/$PROJECT_ID/economind-backend \
+  --platform managed \
+  --region $REGION \
+  --allow-unauthenticated \
+  --set-env-vars GCP_PROJECT_ID=$PROJECT_ID,GCP_LOCATION=$REGION
+```
 
----
+### 4. Verify Deployment
 
-Good luck! 🚀
+```bash
+# Get the service URL
+gcloud run services describe economind-backend \
+  --platform managed \
+  --region $REGION \
+  --format 'value(status.url)'
+
+# Test the health endpoint
+curl https://your-service-url/
+
+# Test the courses endpoint
+curl https://your-service-url/api/courses
+
+# Test the Professor agent
+curl -X POST https://your-service-url/api/chat/professor \
+  -H "Content-Type: application/json" \
+  -d '{"message": "What is GDP?"}'
+```
+
+## Project Structure
+
+```
+economind/
+├── main.py              # FastAPI application (UPDATED - uses ADK)
+├── agents.py            # ADK agent definitions (NEW)
+├── courses_data.py      # Course content
+├── requirements.txt     # Python dependencies (UPDATED - includes ADK)
+├── Dockerfile          # Container configuration
+└── .env.example        # Environment variables template
+```
+
+## Key Changes from Previous Version
+
+### 1. Dependencies (requirements.txt)
+- ✅ Added `google-adk` - Agent Development Kit
+- ✅ Added `google-genai` - Gemini client for ADK
+- ✅ Added `google-cloud-aiplatform` - Vertex AI integration
+- ❌ Removed direct `google-generativeai` usage
+
+### 2. New agents.py File
+- ✅ Defines `professor_agent` and `coach_agent` using ADK
+- ✅ Uses Vertex AI client (no API key needed in production)
+- ✅ Includes context-aware prompt building
+- ✅ Bonus: `collaborative_session()` for multi-agent interaction
+
+### 3. Updated main.py
+- ✅ Imports agents from `agents.py`
+- ✅ Uses `run_professor()` and `run_coach()` instead of direct API calls
+- ✅ New endpoint: `/api/chat/collaborate` for multi-agent collaboration
+- ✅ Version bumped to 2.0.0
+
+## Hackathon Requirements Checklist
+
+- ✅ **Cloud Run**: Serverless deployment on Cloud Run
+- ✅ **AI Agents Category**: Uses Google ADK with two specialized agents
+- ✅ **Region**: europe-west1 (configurable)
+- ✅ **NEW Application**: Built specifically for the hackathon
+- ✅ **Bonus Points**:
+  - Uses Gemini models via ADK
+  - Multi-service architecture (frontend + backend)
+  - Multi-agent collaboration feature
+
+## Testing Locally
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Set environment variables
+export GCP_PROJECT_ID="your-project-id"
+export GCP_LOCATION="europe-west1"
+
+# Run the server
+python main.py
+
+# Test in another terminal
+curl http://localhost:8080/
+curl http://localhost:8080/api/courses
+```
+
+## Troubleshooting
+
+### Authentication Issues
+If you see authentication errors, ensure:
+1. You're authenticated with gcloud: `gcloud auth login`
+2. Application Default Credentials are set: `gcloud auth application-default login`
+3. Your service account has the necessary permissions
+
+### Memory Issues
+If the service runs out of memory:
+```bash
+gcloud run services update economind-backend \
+  --memory 2Gi \
+  --region $REGION
+```
+
+### Timeout Issues
+If requests timeout:
+```bash
+gcloud run services update economind-backend \
+  --timeout 300 \
+  --region $REGION
+```
+
+## Next Steps
+
+1. **Update Frontend**: Update your React app's API base URL to point to the Cloud Run service
+2. **Add Monitoring**: Set up Cloud Logging and Cloud Monitoring
+3. **Add Tools**: Enhance agents with custom tools (ADK feature)
+4. **Add Memory**: Implement conversation memory for agents
+5. **Deploy Frontend**: Deploy React app to Cloud Run or Firebase Hosting
+
+## Cost Optimization
+
+- Cloud Run charges only for actual usage (pay-per-request)
+- First 2 million requests per month are free
+- Vertex AI pricing applies for Gemini API calls
+- Use $100 Google Cloud credits from hackathon registration
+
+## Support
+
+For issues or questions:
+- ADK Documentation: https://google.github.io/adk-docs/
+- Cloud Run Documentation: https://cloud.google.com/run/docs
+- Hackathon Discord: Join the #cloudrun-hackathon channel

@@ -81,7 +81,7 @@ function Home({ navigate }) {
       <footer className="bg-stone-100 border-t border-stone-200">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-stone-500">
           <p>&copy; 2025 EconoMind</p>
-          <p className="text-sm mt-1">Built for Cloud Run Hackathon 2024 - AI Agents Category</p>
+          <p className="text-sm mt-1">Built for Cloud Run Hackathon 2025 - AI Agents Category</p>
         </div>
       </footer>
     </div>
