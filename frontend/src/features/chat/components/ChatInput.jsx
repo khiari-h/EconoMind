@@ -1,5 +1,6 @@
 import Textarea from '@/ui/Textarea'
 import Button from '@/ui/Button'
+import PropTypes from 'prop-types';
 
 function ChatInput({ value, onChange, onKeyPress, onSend, loading, agent }) {
   const focusRing = agent === 'professor' ? 'focus:ring-professor' : 'focus:ring-coach'
@@ -24,4 +25,13 @@ function ChatInput({ value, onChange, onKeyPress, onSend, loading, agent }) {
   )
 }
 
-export default ChatInput
+ChatInput.propTypes = {
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  onKeyPress: PropTypes.func.isRequired,
+  onSend: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
+  agent: PropTypes.oneOf(['professor', 'coach']).isRequired,
+};
+
+export default ChatInput;

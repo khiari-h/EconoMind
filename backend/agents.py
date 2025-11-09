@@ -43,7 +43,6 @@ Guidelines:
 
 professor_agent = Agent(
     model="gemini-2.0-flash-exp",
-    client=client,
     instruction=professor_base_instruction,
     name="Professor",
     description="Expert economics professor who explains concepts clearly with examples"
@@ -71,7 +70,6 @@ Guidelines:
 
 coach_agent = Agent(
     model="gemini-2.0-flash-exp",
-    client=client,
     instruction=coach_base_instruction,
     name="Coach",
     description="Practical economics coach who creates exercises and training"

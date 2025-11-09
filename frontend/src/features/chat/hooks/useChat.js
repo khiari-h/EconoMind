@@ -1,17 +1,53 @@
 import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
-export function useChat({ agent, course, viewedCourses, initialMessage }) {
-  const [messages, setMessages] = useState([initialMessage]);
+/**
+ * A custom hook to manage chat state and interactions with the backend API.
+ * @param {{ agent: 'professor' | 'coach', course?: { id: string, title: string, content: string } }} param0
+ * @returns
+ */
+export function useChat({ agent, course }) {
+  /**
+   * Generates the initial message based on the agent and selected course.
+   * @returns {object} The initial message object.
+   */
+  const getInitialMessage = () => {
+    const baseMessage = {
+      id: uuidv4(),
+      role: 'agent',
+    };
+
+    if (agent === 'professor') {
+      return {
+        ...baseMessage,
+        content: course
+          ? `Welcome! I'm your Professor. I see you've just reviewed the chapter on "${course.title}". What specific point would you like to clarify?`
+          : "Welcome! I'm your economics Professor. Feel free to ask me about any economic concept.",
+      };
+    }
+
+    if (agent === 'coach') {
+      return {
+        ...baseMessage,
+        content: course
+          ? `Welcome! I'm your Coach. Now that you've reviewed "${course.title}", let's put it into practice. What kind of exercise would you like to do? A case study, a dissertation, or a document analysis?`
+          : "Welcome! I'm your economics Coach. Ready to practice? Tell me what topic you'd like to work on.",
+      };
+    }
+    return { ...baseMessage, content: 'Hello!' };
+  };
+
+  const [messages, setMessages] = useState([getInitialMessage()]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
 
   const send = async () => {
     if (!input.trim()) return;
 
-    const userMessage = { role: 'user', content: input };
-    setMessages(prev => [...prev, userMessage]);
+    const userMessage = { id: uuidv4(), role: 'user', content: input };
+    setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setLoading(true);
 
@@ -21,31 +57,31 @@ export function useChat({ agent, course, viewedCourses, initialMessage }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: input,
-          // This is where the magic happens!
-          // We send the full content of the current course as context.
-          course_context: course ? course.content : null,
-          // We also send the titles of previously viewed courses for revision context.
-          viewed_courses_context: viewedCourses ? viewedCourses.map(c => c.title) : [],
+          course_context: course?.content || null,
         }),
       });
 
-      if (!response.ok) throw new Error('API Error');
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
+      }
 
       const data = await response.json();
-      const agentMessage = { role: 'agent', content: data.response };
-      setMessages(prev => [...prev, agentMessage]);
-
+      const agentMessage = { id: uuidv4(), role: 'agent', content: data.response };
+      setMessages((prev) => [...prev, agentMessage]);
     } catch (error) {
-      console.error(`Error chatting with ${agent}:`, error);
-      const errorMessage = { role: 'agent', content: 'Sorry, I encountered an error. Please try again.' };
-      setMessages(prev => [...prev, errorMessage]);
+      console.error('Failed to send message:', error);
+      const errorMessage = { id: uuidv4(), role: 'agent', content: "Désolé, une erreur est survenue. Veuillez réessayer." };
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setLoading(false);
     }
   };
 
   const onKeyPress = (e) => {
-    if (e.key === 'Enter' && !loading) send();
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      send();
+    }
   };
 
   return { messages, input, setInput, loading, send, onKeyPress };

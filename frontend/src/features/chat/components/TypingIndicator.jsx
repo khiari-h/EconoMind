@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 function TypingIndicator({ agent }) {
   const color = agent === 'professor' ? 'bg-professor' : 'bg-coach'
   const icon = agent === 'professor' ? '🎓' : '💪'
@@ -15,4 +17,8 @@ function TypingIndicator({ agent }) {
   )
 }
 
-export default TypingIndicator
+TypingIndicator.propTypes = {
+  agent: PropTypes.oneOf(['professor', 'coach']).isRequired,
+};
+
+export default TypingIndicator;

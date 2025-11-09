@@ -1,14 +1,9 @@
 import ChatWindow from '@/features/chat/components/ChatWindow'
 import { useChat } from '@/features/chat/hooks/useChat'
+import PropTypes from 'prop-types';
 
 function Professor({ course }) {
-  const initial = {
-    role: 'agent',
-    content: course
-      ? `Hello! I'm your economics professor. I see you're interested in "${course.title}". What would you like to learn about?`
-      : "Hello! I'm your economics professor. Ask me anything about economic concepts, and I'll explain them clearly with examples.",
-  }
-  const { messages, input, setInput, loading, send, onKeyPress } = useChat({ agent: 'professor', course, initialMessage: initial })
+  const { messages, input, setInput, loading, send, onKeyPress } = useChat({ agent: 'professor', course })
 
   const header = (
     <div className="p-4 bg-white border-b border-stone-200 shadow-sm">
@@ -37,4 +32,11 @@ function Professor({ course }) {
   )
 }
 
-export default Professor
+Professor.propTypes = {
+  course: PropTypes.shape({
+    id: PropTypes.string,
+    title: PropTypes.string,
+  }),
+};
+
+export default Professor;

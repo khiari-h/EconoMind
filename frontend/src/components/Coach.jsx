@@ -1,14 +1,9 @@
 import ChatWindow from '@/features/chat/components/ChatWindow'
 import { useChat } from '@/features/chat/hooks/useChat'
+import PropTypes from 'prop-types';
 
 function Coach({ course }) {
-  const initial = {
-    role: 'agent',
-    content: course
-      ? `Hey there! I'm your economics coach. Ready to practice "${course.title}" with some exercises? Let's get started!`
-      : "Hey! I'm your economics coach. Let's practice with exercises, case studies, and practical applications. What topic do you want to work on?",
-  }
-  const { messages, input, setInput, loading, send, onKeyPress } = useChat({ agent: 'coach', course, initialMessage: initial })
+  const { messages, input, setInput, loading, send, onKeyPress } = useChat({ agent: 'coach', course })
 
   const header = (
     <div className="p-4 bg-white border-b border-stone-200 shadow-sm">
@@ -37,4 +32,11 @@ function Coach({ course }) {
   )
 }
 
-export default Coach
+Coach.propTypes = {
+  course: PropTypes.shape({
+    id: PropTypes.string,
+    title: PropTypes.string,
+  }),
+};
+
+export default Coach;

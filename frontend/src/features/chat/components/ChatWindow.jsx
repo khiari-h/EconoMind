@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
+import PropTypes from 'prop-types';
 import remarkGfm from 'remark-gfm';
 
 function Message({ message }) {
@@ -28,12 +29,22 @@ function Message({ message }) {
                         prose-a:text-inherit hover:prose-a:underline
                         prose-pre:bg-slate-700 prose-pre:text-white
         ">
-          <ReactMarkdown remarkPlugins={[remarkGfm]} children={message.content} />
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
         </div>
       </div>
     </div>
   );
 }
+
+Message.propTypes = {
+  message: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    role: PropTypes.string.isRequired,
+    content: PropTypes.string.isRequired,
+    agent: PropTypes.oneOf(['professor', 'coach']).isRequired,
+  }).isRequired,
+};
+
 
 function TypingIndicator({ agent }) {
   return (
@@ -52,7 +63,11 @@ function TypingIndicator({ agent }) {
   );
 }
 
-function ChatWindow({ agent, header, messages, loading, input, setInput, onKeyPress, onSend }) {
+TypingIndicator.propTypes = {
+  agent: PropTypes.oneOf(['professor', 'coach']).isRequired,
+};
+
+function ChatWindow({ agent, header, messages, loading, input, setInput, onKeyDown, onSend }) {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -65,7 +80,7 @@ function ChatWindow({ agent, header, messages, loading, input, setInput, onKeyPr
         {header}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {messages.map((msg, index) => (
-            <Message key={index} message={{...msg, agent}} />
+            <Message key={msg.id || index} message={{...msg, agent}} />
           ))}
           {loading && <TypingIndicator agent={agent} />}
           <div ref={messagesEndRef} />
@@ -76,7 +91,7 @@ function ChatWindow({ agent, header, messages, loading, input, setInput, onKeyPr
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={onKeyPress}
+              onKeyDown={onKeyDown}
               placeholder="Type your message..."
               disabled={loading}
               className="w-full pl-4 pr-12 py-3 bg-stone-100 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
@@ -96,5 +111,20 @@ function ChatWindow({ agent, header, messages, loading, input, setInput, onKeyPr
     </div>
   );
 }
+
+ChatWindow.propTypes = {
+  agent: PropTypes.oneOf(['professor', 'coach']).isRequired,
+  header: PropTypes.node.isRequired,
+  messages: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string,
+    role: PropTypes.string.isRequired,
+    content: PropTypes.string.isRequired,
+  })).isRequired,
+  loading: PropTypes.bool.isRequired,
+  input: PropTypes.string.isRequired,
+  setInput: PropTypes.func.isRequired,
+  onKeyDown: PropTypes.func.isRequired,
+  onSend: PropTypes.func.isRequired,
+};
 
 export default ChatWindow;

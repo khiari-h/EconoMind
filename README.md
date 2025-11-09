@@ -1,40 +1,43 @@
 # 💡 EconoMind - AI-Powered Economics Learning Platform
 
-**Built for Cloud Run Hackathon 2025 - AI Agents Category**
+**Submission for the Cloud Run Hackathon 2025 - AI Agents Category**
 
-EconoMind is an interactive educational platform that uses two specialized AI agents to teach economics:
+EconoMind is an interactive educational platform that uses two specialized AI agents, built with the **Google Agent Development Kit (ADK)**, to teach economics:
 - 🎓 **The Professor**: Explains concepts with clear theory and examples
 - 💪 **The Coach**: Provides practical exercises and hands-on learning
 
 ## 🏗️ Architecture
 
-### Frontend (React + Vite)
-- Modern, responsive UI with Tailwind CSS
-- Real-time chat interfaces for both agents
-- Course browsing and selection
-- Deployed as Cloud Run Service
+The application is designed as a modern microservices architecture, fully deployed on Google Cloud Run.
 
-### Backend (FastAPI)
-- RESTful API with two AI agent endpoints
-- Gemini AI integration for intelligent responses
-- Course content management
-- Deployed as Cloud Run Service
+- **Frontend**: A responsive React (Vite) application using Tailwind CSS, which communicates with the backend via REST API calls.
+- **Backend**: A Python FastAPI API that exposes endpoints for the AI agents. It uses the **Google ADK** to define and run the agents, which are powered by Gemini models through a Vertex AI integration.
 
-## 🚀 Quick Start
+## 🚀 Quick Start (Local Development)
 
 ### Prerequisites
 - Node.js 18+
 - Python 3.11+
-- Google Cloud account
-- Gemini API key
+- `gcloud` CLI installed and authenticated (`gcloud auth login`)
 
 ### Local Development
 
 **Backend:**
 ```bash
+# Authenticate for Google Cloud API access (required by ADK/Vertex AI)
+gcloud auth application-default login
+
+# Navigate to the backend directory
 cd backend
+
+# Install dependencies
 pip install -r requirements.txt
-export GEMINI_API_KEY="your-api-key"
+
+# Set environment variables (replace with your project ID)
+export GCP_PROJECT_ID="your-gcp-project-id"
+export GCP_LOCATION="europe-west1"
+
+# Start the server
 python main.py
 ```
 
