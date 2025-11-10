@@ -111,17 +111,14 @@ economind/
 - ✅ Added `google-genai` - Gemini client for ADK
 - ✅ Added `google-cloud-aiplatform` - Vertex AI integration
 - ❌ Removed direct `google-generativeai` usage
-
-### 2. New agents.py File
-- ✅ Defines `professor_agent` and `coach_agent` using ADK
+### 2. Updated agents.py File
+- ✅ Defines `professor` and `coach` agents using ADK logic
 - ✅ Uses Vertex AI client (no API key needed in production)
 - ✅ Includes context-aware prompt building
-- ✅ Bonus: `collaborative_session()` for multi-agent interaction
 
 ### 3. Updated main.py
 - ✅ Imports agents from `agents.py`
 - ✅ Uses `run_professor()` and `run_coach()` instead of direct API calls
-- ✅ New endpoint: `/api/chat/collaborate` for multi-agent collaboration
 - ✅ Version bumped to 2.0.0
 
 ## Hackathon Requirements Checklist
@@ -133,8 +130,6 @@ economind/
 - ✅ **Bonus Points**:
   - Uses Gemini models via ADK
   - Multi-service architecture (frontend + backend)
-  - Multi-agent collaboration feature
-
 ## Testing Locally
 
 ```bash

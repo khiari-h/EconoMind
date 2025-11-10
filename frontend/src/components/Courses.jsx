@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-
+ 
 const API_URL = "https://economind-backend-847559264991.europe-west1.run.app"
 
 /**

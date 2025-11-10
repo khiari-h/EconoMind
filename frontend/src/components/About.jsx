@@ -33,7 +33,7 @@ function About() {
             </p>
 
             <h2>Our Long-Term Vision</h2>
-            <p>Our long-term vision is to make these agents increasingly autonomous — able to track progress, adapt their teaching style, and collaborate to create a personalized tutoring experience across multiple subjects beyond economics.</p>
+            <p>Our long-term vision is to make these agents increasingly autonomous — able to track progress, adapt their teaching style, and collaborate to build a personalized tutoring experience across multiple subjects beyond economics.</p>
 
           </div>
         </div>

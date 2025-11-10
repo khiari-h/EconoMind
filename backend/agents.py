@@ -11,7 +11,7 @@ from typing import List, Optional
 def get_client():
     """Initialize and return the Gemini client for ADK agents"""
     project_id = os.environ.get("GCP_PROJECT_ID", "vivid-course-477805-n0")
-    # CORRECTION CRUCIALE: Forcer la région stable US-CENTRAL1 pour l'API Gemini
+    # CRUCIAL FIX: Force the stable US-CENTRAL1 region for the Gemini API
     GEMINI_LOCATION = "us-central1"
     
     return Client(
@@ -102,12 +102,12 @@ def run_professor(
     """
     try:
         prompt = build_context_prompt(user_message, course_context, viewed_courses)
-        # CORRECTION : Appel direct au modèle Gemini pour plus de fiabilité
+        # FIX: Direct call to the Gemini model for more reliability
         full_prompt = f"{professor_base_instruction}\n\n{prompt}"
-        # CORRECTION FINALE DU CODE: Modèle correct et force la région US-CENTRAL1
-        # 1. Utilise le nom de modèle officiel : gemini-2.0-flash
-        # 2. Utilise le chemin canonique du publisher : publishers/google/models/
-        # 3. Utilise le paramètre 'location' pour forcer l'appel à us-central1 (contournant le problème de région)
+        # FINAL CODE FIX: Correct model and force US-CENTRAL1 region
+        # 1. Use the official model name: gemini-2.0-flash
+        # 2. Use the canonical publisher path: publishers/google/models/
+        # 3. Use the 'location' parameter to force the call to us-central1 (bypassing the region issue)
         model_name = "publishers/google/models/gemini-2.0-flash"
 
         response = client.models.generate_content(
@@ -137,12 +137,12 @@ def run_coach(
     """
     try:
         prompt = build_context_prompt(user_message, course_context, viewed_courses)
-        # CORRECTION : Appel direct au modèle Gemini pour plus de fiabilité
+        # FIX: Direct call to the Gemini model for more reliability
         full_prompt = f"{coach_base_instruction}\n\n{prompt}"
-        # CORRECTION FINALE DU CODE: Modèle correct et force la région US-CENTRAL1
-        # 1. Utilise le nom de modèle officiel : gemini-2.0-flash
-        # 2. Utilise le chemin canonique du publisher : publishers/google/models/
-        # 3. Utilise le paramètre 'location' pour forcer l'appel à us-central1 (contournant le problème de région)
+        # FINAL CODE FIX: Correct model and force US-CENTRAL1 region
+        # 1. Use the official model name: gemini-2.0-flash
+        # 2. Use the canonical publisher path: publishers/google/models/
+        # 3. Use the 'location' parameter to force the call to us-central1 (bypassing the region issue)
         model_name = "publishers/google/models/gemini-2.0-flash"
 
         response = client.models.generate_content(
@@ -152,40 +152,3 @@ def run_coach(
         return response
     except Exception as e:
         return f"Oops! I'm having trouble creating that exercise. Let's try something else! (Error: {str(e)})"
-
-
-# ==================== MULTI-AGENT COLLABORATION (BONUS) ====================
-
-def collaborative_session(
-    user_message: str,
-    course_context: Optional[str] = None
-) -> dict:
-    """
-    Experimental: Run both agents collaboratively
-    Professor explains, then Coach creates an exercise
-    
-    This demonstrates agent-to-agent communication for bonus points
-    """
-    try:
-        # Step 1: Professor explains the concept
-        professor_response = run_professor(user_message, course_context)
-        
-        # Step 2: Coach creates exercise based on Professor's explanation
-        coach_prompt = f"""Based on the following explanation, create a practical exercise:
-
-{professor_response}
-
-Create an exercise that helps the student practice this concept."""
-        
-        coach_response = run_coach(coach_prompt, course_context)
-        
-        return {
-            "professor": professor_response,
-            "coach": coach_response,
-            "collaboration": True
-        }
-    except Exception as e:
-        return {
-            "error": str(e),
-            "collaboration": False
-        }

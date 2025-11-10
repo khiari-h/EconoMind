@@ -12,7 +12,7 @@ function Coach({ course }) {
         <h1 className="text-2xl font-bold text-coach-dark">
           The Coach
         </h1>
-        <p className="text-sm text-stone-500">{course ? `Training on: ${course.title}` : 'Practice makes perfect!'}</p>
+        <p className="text-sm text-stone-500">{course ? `Training on: ${course.title}` : 'Ready to train!'}</p>
       </div>
     </div>
   )

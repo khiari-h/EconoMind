@@ -46,7 +46,7 @@ Key drivers of economic growth include:
 International Trade is the exchange of goods and services between countries. It allows countries to specialize in what they produce best, leading to greater efficiency and a wider variety of goods for consumers.
 
 **Comparative Advantage** is the key principle. A country should produce goods where it has the lowest *opportunity cost*, even if another country is better at producing everything (absolute advantage).
-*   **Example:** If Brazil is great at producing coffee and good at making cars, while the USA is excellent at making cars and okay at growing coffee, both benefit if Brazil focuses on coffee and the USA focuses on cars, and then they trade.
+*   **Example:** If A is great at producing coffee and good at making cars, while the B is excellent at making cars and okay at growing coffee, both benefit if A focuses on coffee and the B focuses on cars, and then they trade.
 
 ---
 
@@ -60,18 +60,11 @@ The Balance of Trade measures the difference between a country's exports and imp
 
 # 3. Trade Barriers
 
-These are policies that restrict trade to protect domestic industries.
+These are policies trade to protect domestic industries.
 *   **Tariffs:** Taxes on imported goods, making them more expensive.
 *   **Quotas:** Limits on the quantity of a good that can be imported.
 *   **Subsidies:** Government payments to domestic producers to help them compete.
 
----
-
-# 4. Exchange Rates
-
-The value of a country's currency has a major impact on its trade.
-*   **Strong Currency:** Makes imports cheaper for domestic consumers, but makes exports more expensive for foreigners.
-*   **Weak Currency:** Makes exports cheaper for foreigners, but makes imports more expensive for domestic consumers.
 """
     }
 ]

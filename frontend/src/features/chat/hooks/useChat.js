@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-const API_URL = 'https://economind-backend-847559264991.europe-west1.run.app';
+const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
 /**
  * A custom hook to manage chat state and interactions with the backend API.
@@ -33,7 +33,7 @@ export function useChat({ agent, course }) {
         ...baseMessage,
         content: course
           ? `Welcome! I'm your Coach. Now that you've reviewed "${course.title}", let's put it into practice. What kind of exercise would you like to do? A case study, a dissertation, or a document analysis?`
-          : "Welcome! I'm your economics Coach. Ready to practice? Tell me what topic you'd like to work on.",
+          : "Welcome! I'm your economics Coach. Ready to train? Tell me what topic you'd like to work on.",
       };
     }
     return { ...baseMessage, content: 'Hello!' };
@@ -70,7 +70,7 @@ export function useChat({ agent, course }) {
       setMessages((prev) => [...prev, agentMessage]);
     } catch (error) {
       console.error('Failed to send message:', error);
-      const errorMessage = { id: uuidv4(), role: 'agent', content: "Désolé, une erreur est survenue. Veuillez réessayer." };
+      const errorMessage = { id: uuidv4(), role: 'agent', content: "Sorry, an error occurred. Please try again." };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setLoading(false);

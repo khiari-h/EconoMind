@@ -1,4 +1,4 @@
-﻿# 💡 EconoMind - AI-Powered Economics Learning Platform
+﻿﻿# 💡 EconoMind - AI-Powered Economics Learning Platform
 
 **Submission for the Cloud Run Hackathon 2025 - AI Agents Category**
 
@@ -30,34 +30,35 @@ The application is designed as a modern microservices architecture, fully deploy
  ## 🎯 Features
  
  - **Dual AI Agents**: Specialized Professor and Coach roles built with the Google Agent Development Kit (ADK).
- - **Multi-Agent Collaboration (A2A Protocol)**: A bonus feature where the Professor explains a concept and the Coach immediately generates and proposes a relevant exercise, demonstrating Agent-to-Agent communication.
  - **Course-Aware**: Context-specific responses based on the selected course.
  - **Real-Time Chat**: Interactive conversations with both agents.
  - **Serverless**: Fully deployed on Google Cloud Run for scalability and cost-efficiency.
  - **Microservices**: Decoupled React frontend and Python FastAPI backend.
  - **Responsive Design**: The user interface works seamlessly on both desktop and mobile.
 
+## 🚀 Roadmap: The Future of EconoMind (Version 2.0)
+
+Our vision for EconoMind goes beyond the current implementation. Given the time constraints of the hackathon, we focused on building a robust and reliable foundation. For Version 2.0, we plan to introduce a truly dynamic multi-agent collaboration:
+
+- **Dynamic Collaborative Chat**: A unified chat interface where the Professor and Coach interact with each other and the student in real-time.
+- **Agent-to-Agent Communication**: The Coach will be able to "listen" to the Professor's explanations and create exercises that are dynamically adapted to the specific points covered in the conversation.
+- **Stateful Conversations**: Implementing long-term memory for agents to remember past interactions and provide a more personalized learning journey.
+
 ## 📁 Project Structure
 
-```
-economind-hackathon/
+```bash
+EconoMind/
 ├── backend/
-│   ├── main.py              # FastAPI app with agent endpoints
-│   ├── requirements.txt     # Python dependencies
-│   └── Dockerfile          # Cloud Run deployment
+│   ├── main.py             # FastAPI application with agent endpoints
+│   ├── agents.py           # Agent definitions (Professor & Coach)
+│   ├── courses_data.py     # Static course content
+│   ├── requirements.txt    # Python dependencies
+│   └── Dockerfile          # Container for Cloud Run
 ├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Home.jsx    # Landing page
-│   │   │   ├── Courses.jsx # Course list
-│   │   │   ├── Professor.jsx # Professor chat
-│   │   │   └── Coach.jsx   # Coach chat
-│   │   ├── App.jsx         # Main app component
-│   │   └── index.css       # Tailwind styles
-│   ├── Dockerfile          # Cloud Run deployment
-│   ├── nginx.conf          # Nginx configuration
-│   └── package.json        # Node dependencies
-└── README.md               # This file
+│   ├── ...                 # React application source files
+│   └── Dockerfile          # Container for Cloud Run
+├── DEPLOYMENT.md           # Detailed deployment instructions
+└── README.md               # This file (you are here!)
 ```
 
 ## 🎬 Demo Video Checklist

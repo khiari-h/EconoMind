@@ -1,7 +1,7 @@
 """
 EconoMind Backend API
 Cloud Run Hackathon 2025 - AI Agents Category
-Built with Google ADK (Agent Development Kit)
+Built with Google ADK (Agent Development Kit) 
 """
 
 # Import course data from the separate file
@@ -14,11 +14,11 @@ from typing import Optional, List
 import os
 
 # Import ADK agents
-from agents import run_professor, run_coach, collaborative_session
+from agents import run_professor, run_coach
 
 # Define constants for course titles to avoid string duplication
 COURSE_TITLE_GDP = "GDP and Economic Growth"
-COURSE_TITLE_TRADE = "International Trade"
+COURSE_TITLE_TRADE = "International Trade" 
 
 app = FastAPI(
     title="EconoMind API",
@@ -28,7 +28,7 @@ app = FastAPI(
 
 # CORS configuration for frontend
 app.add_middleware(
-    CORSMiddleware,
+    CORSMiddleware, 
     allow_origins=["*"],  # Update with your frontend URL in production
     allow_credentials=True,
     allow_methods=["*"],
@@ -36,7 +36,7 @@ app.add_middleware(
 )
 
 
-# ==================== DATA MODELS ====================
+# ==================== DATA MODELS ==================== 
 
 class ChatMessage(BaseModel):
     message: str
@@ -51,13 +51,7 @@ class ChatResponse(BaseModel):
     agent_type: str
 
 
-class CollaborativeResponse(BaseModel):
-    professor_response: str
-    coach_response: str
-    collaboration: bool
-
-
-# ==================== API ENDPOINTS ====================
+# ==================== API ENDPOINTS ==================== 
 
 @app.get("/")
 async def root():
@@ -72,7 +66,7 @@ async def root():
 
 
 @app.get("/api/courses")
-async def get_courses():
+async def get_courses(): 
     """Get all available courses"""
     # Return only the information needed for the course list
     courses_summary = [
@@ -83,8 +77,8 @@ async def get_courses():
 
 
 @app.get("/api/courses/{course_id}")
-async def get_course(course_id: str):
-    """Get specific course details"""
+async def get_course(course_id: str): 
+    """Gets specific course details"""
     course = next((c for c in COURSES if c["id"] == course_id), None)
     if course:
         return course
@@ -92,7 +86,7 @@ async def get_course(course_id: str):
         raise HTTPException(status_code=404, detail="Course not found")
 
 
-@app.post("/api/chat/professor", response_model=ChatResponse)
+@app.post("/api/chat/professor", response_model=ChatResponse) 
 async def chat_with_professor(message: ChatMessage):
     """
     Chat with the Professor agent (ADK-powered)
@@ -113,7 +107,7 @@ async def chat_with_professor(message: ChatMessage):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/api/chat/coach", response_model=ChatResponse)
+@app.post("/api/chat/coach", response_model=ChatResponse) 
 async def chat_with_coach(message: ChatMessage):
     """
     Chat with the Coach agent (ADK-powered)
@@ -134,34 +128,7 @@ async def chat_with_coach(message: ChatMessage):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/api/chat/collaborate", response_model=CollaborativeResponse)
-async def collaborative_learning(message: ChatMessage):
-    """
-    BONUS FEATURE: Collaborative session with both agents
-    Professor explains, then Coach creates practice exercises
-    
-    This demonstrates multi-agent collaboration for bonus hackathon points
-    """
-    try:
-        result = collaborative_session(
-            user_message=message.message,
-            course_context=message.course_context
-        )
-        
-        if result.get("collaboration"):
-            return CollaborativeResponse(
-                professor_response=result["professor"],
-                coach_response=result["coach"],
-                collaboration=True
-            )
-        else:
-            raise HTTPException(status_code=500, detail=result.get("error", "Collaboration failed"))
-            
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-# ==================== RUN SERVER ====================
+# ==================== RUN SERVER ==================== 
 
 if __name__ == "__main__":
     import uvicorn
