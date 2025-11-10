@@ -3,7 +3,6 @@ EconoMind AI Agents - Built with Google ADK
 Cloud Run Hackathon 2025 - AI Agents Category
 """
 
-from google.adk.agents import Agent
 from google.genai import Client
 import os
 from typing import List, Optional
@@ -11,14 +10,15 @@ from typing import List, Optional
 # Initialize the Gemini client with Vertex AI
 def get_client():
     """Initialize and return the Gemini client for ADK agents"""
-    project_id = os.environ.get("GCP_PROJECT_ID", "your-project-id")
-    location = os.environ.get("GCP_LOCATION", "europe-west1")
+    project_id = os.environ.get("GCP_PROJECT_ID", "vivid-course-477805-n0")
+    # CORRECTION CRUCIALE: Forcer la région stable US-CENTRAL1 pour l'API Gemini
+    GEMINI_LOCATION = "us-central1"
     
     return Client(
         vertexai=True,
         project=project_id,
-        location=location
-    )
+        location=GEMINI_LOCATION
+        )
 
 # Create the client instance
 client = get_client()
@@ -41,14 +41,6 @@ Guidelines:
 - Connect concepts to everyday life
 """
 
-professor_agent = Agent(
-    model="gemini-2.0-flash-exp",
-    instruction=professor_base_instruction,
-    name="Professor",
-    description="Expert economics professor who explains concepts clearly with examples"
-)
-
-
 # ==================== COACH AGENT ====================
 
 coach_base_instruction = """You are an economics coach focused on practical application and skill-building.
@@ -67,14 +59,6 @@ Guidelines:
 - Keep responses practical (200-400 words)
 - Encourage active learning
 """
-
-coach_agent = Agent(
-    model="gemini-2.0-flash-exp",
-    instruction=coach_base_instruction,
-    name="Coach",
-    description="Practical economics coach who creates exercises and training"
-)
-
 
 # ==================== AGENT HELPER FUNCTIONS ====================
 
@@ -118,8 +102,18 @@ def run_professor(
     """
     try:
         prompt = build_context_prompt(user_message, course_context, viewed_courses)
-        # Utiliser le client Gemini pour exécuter l'agent
-        response = client.generate_content(professor_agent, prompt).text
+        # CORRECTION : Appel direct au modèle Gemini pour plus de fiabilité
+        full_prompt = f"{professor_base_instruction}\n\n{prompt}"
+        # CORRECTION FINALE DU CODE: Modèle correct et force la région US-CENTRAL1
+        # 1. Utilise le nom de modèle officiel : gemini-2.0-flash
+        # 2. Utilise le chemin canonique du publisher : publishers/google/models/
+        # 3. Utilise le paramètre 'location' pour forcer l'appel à us-central1 (contournant le problème de région)
+        model_name = "publishers/google/models/gemini-2.0-flash"
+
+        response = client.models.generate_content(
+            model=model_name,
+            contents=[full_prompt]
+        ).text
         return response
     except Exception as e:
         return f"I apologize, but I'm having trouble processing that. Could you rephrase your question? (Error: {str(e)})"
@@ -143,8 +137,18 @@ def run_coach(
     """
     try:
         prompt = build_context_prompt(user_message, course_context, viewed_courses)
-        # Utiliser le client Gemini pour exécuter l'agent
-        response = client.generate_content(coach_agent, prompt).text
+        # CORRECTION : Appel direct au modèle Gemini pour plus de fiabilité
+        full_prompt = f"{coach_base_instruction}\n\n{prompt}"
+        # CORRECTION FINALE DU CODE: Modèle correct et force la région US-CENTRAL1
+        # 1. Utilise le nom de modèle officiel : gemini-2.0-flash
+        # 2. Utilise le chemin canonique du publisher : publishers/google/models/
+        # 3. Utilise le paramètre 'location' pour forcer l'appel à us-central1 (contournant le problème de région)
+        model_name = "publishers/google/models/gemini-2.0-flash"
+
+        response = client.models.generate_content(
+            model=model_name,
+            contents=[full_prompt]
+        ).text
         return response
     except Exception as e:
         return f"Oops! I'm having trouble creating that exercise. Let's try something else! (Error: {str(e)})"
