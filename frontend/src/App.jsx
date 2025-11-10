@@ -5,7 +5,6 @@ import Courses from './components/Courses';
 import Professor from './components/Professor';
 import Coach from './components/Coach';
 import CourseReader from './components/CourseReader';
-import Collaborate from './components/Collaborate'; // <-- Import the new component
 import About from './components/About'; // This import is now used
 
 function App() {
@@ -15,7 +14,7 @@ function App() {
 
   const navigate = (newPage, newCourse = null) => {
     // If navigating to an agent page without a new course, keep the old one 
-    if ((newPage === 'professor' || newPage === 'coach' || newPage === 'collaborate') && newCourse === null) { 
+    if ((newPage === 'professor' || newPage === 'coach') && newCourse === null) { 
           // Do nothing, the course is already in the state 
     } else {
       setCourse(newCourse);
@@ -41,8 +40,6 @@ function App() {
         return <Coach course={course} navigate={navigate} viewedCourses={viewedCourses} />;
       case 'read':
         return <CourseReader courseId={course?.id} />;
-    case 'collaborate':
-      return <Collaborate course={course} navigate={navigate} viewedCourses={viewedCourses} />;
       case 'about':
         return <About />;
       case 'home':
