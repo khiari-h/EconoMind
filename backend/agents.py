@@ -118,7 +118,8 @@ def run_professor(
     """
     try:
         prompt = build_context_prompt(user_message, course_context, viewed_courses)
-        response = professor_agent.run(prompt)
+        # Utiliser le client Gemini pour exécuter l'agent
+        response = client.generate_content(professor_agent, prompt).text
         return response
     except Exception as e:
         return f"I apologize, but I'm having trouble processing that. Could you rephrase your question? (Error: {str(e)})"
@@ -142,7 +143,8 @@ def run_coach(
     """
     try:
         prompt = build_context_prompt(user_message, course_context, viewed_courses)
-        response = coach_agent.run(prompt)
+        # Utiliser le client Gemini pour exécuter l'agent
+        response = client.generate_content(coach_agent, prompt).text
         return response
     except Exception as e:
         return f"Oops! I'm having trouble creating that exercise. Let's try something else! (Error: {str(e)})"
