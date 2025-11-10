@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
+const API_URL = "https://economind-backend-847559264991.europe-west1.run.app"
 
 /**
  * Displays the list of available courses.
@@ -91,5 +92,9 @@ function Courses({ navigate }) {
     </div>
   )
 }
+
+Courses.propTypes = {
+  navigate: PropTypes.func.isRequired,
+};
 
 export default Courses

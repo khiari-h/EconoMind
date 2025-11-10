@@ -3,7 +3,7 @@ import ReactMarkdown from "react-markdown";
 import PropTypes from 'prop-types';
 import remarkGfm from "remark-gfm";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+const API_URL = "https://economind-backend-847559264991.europe-west1.run.app";
 
 function CourseReader({ courseId }) {
   const [course, setCourse] = useState(null);
