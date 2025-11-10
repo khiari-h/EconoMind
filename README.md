@@ -1,4 +1,4 @@
-﻿﻿# 💡 EconoMind - AI-Powered Economics Learning Platform
+﻿﻿﻿﻿# 💡 EconoMind - AI-Powered Economics Learning Platform
 
 **Submission for the Cloud Run Hackathon 2025 - AI Agents Category**
 
