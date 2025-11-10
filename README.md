@@ -29,12 +29,13 @@ The application is designed as a modern microservices architecture, fully deploy
 
  ## 🎯 Features
  
- - **Dual AI Agents**: Specialized Professor and Coach roles built with the Google ADK.
- - **Multi-Agent Collaboration**: A bonus feature where the Professor explains a concept and the Coach immediately creates a relevant exercise.
+ - **Dual AI Agents**: Specialized Professor and Coach roles built with the Google Agent Development Kit (ADK).
+ - **Multi-Agent Collaboration (A2A Protocol)**: A bonus feature where the Professor explains a concept and the Coach immediately generates and proposes a relevant exercise, demonstrating Agent-to-Agent communication.
  - **Course-Aware**: Context-specific responses based on the selected course.
  - **Real-Time Chat**: Interactive conversations with both agents.
  - **Serverless**: Fully deployed on Google Cloud Run for scalability and cost-efficiency.
  - **Microservices**: Decoupled React frontend and Python FastAPI backend.
+ - **Responsive Design**: The user interface works seamlessly on both desktop and mobile.
 
 ## 📁 Project Structure
 
@@ -89,7 +90,7 @@ graph TD
 
     subgraph "Google Cloud Project"
         B[FastAPI Backend on Cloud Run]
-        C[Google Gemini API]
+        C[Gemini Model via Vertex AI]
     end
 
     A --"REST API Call"--> B
@@ -115,6 +116,6 @@ graph TD
 
 Built for Cloud Run Hackathon 2025
 
-## 👨‍💻 Author
+## 👤 Author
 
 Hamdane - Solo Developer
